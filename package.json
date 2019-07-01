@@ -1,0 +1,22 @@
+{
+  "name": "nodeos-blocks-truncate",
+  "version": "1.0.0",
+  "description": "Truncate the blocks.log to the defined size",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/felipeasf/nodeos-blocks-truncate.git"
+  },
+  "author": "Felipe Faria",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/felipeasf/nodeos-blocks-truncate/issues"
+  },
+  "homepage": "https://github.com/felipeasf/nodeos-blocks-truncate#readme",
+  "dependencies": {
+    "fs-extra": "^8.1.0"
+  }
+}
