@@ -1,8 +1,10 @@
-const config = require('.config');
+const config = require('./config');
 const fs = require('fs');
 const fs_extra = require('fs-extra');
 const path = require('path');
 const {spawn} = require('child_process');
+
+console.log("hello");
 
 function clean(){
     //clean state data folder
