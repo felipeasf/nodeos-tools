@@ -1,0 +1,22 @@
+chain-state-db-size-mb = 4096
+chain-state-db-guard-size-mb = 256
+
+p2p-max-nodes-per-host = 4
+
+p2p-listen-endpoint = 192.168.10.2:19876
+
+#seed nodes
+p2p-peer-address = 192.168.10.1:19876
+p2p-peer-address = 192.168.10.2:19866
+p2p-peer-address = 192.168.10.3:19876
+
+#apis
+#p2p-peer-address = 127.0.0.1:9876
+#p2p-peer-address = 127.0.0.1:9877
+
+agent-name = "Seed Node"
+
+max-clients = 50
+
+enable-stale-production = false
+pause-on-startup = false

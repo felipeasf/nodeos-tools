@@ -1,0 +1,28 @@
+chain-state-db-size-mb = 4096
+chain-state-db-guard-size-mb = 256
+
+http-server-address = 127.0.0.1:8888
+
+p2p-listen-endpoint = 0.0.0.0:9876
+
+
+#seed nodes
+p2p-peer-address = 192.168.10.1:19876
+p2p-peer-address = 192.168.10.2:19876
+p2p-peer-address = 192.168.10.3:19876
+
+agent-name = "API 1"
+
+max-clients = 50
+
+plugin = eosio::state_history_plugin
+plugin = eosio::history_api_plugin
+plugin = eosio::history_plugin
+plugin = eosio::chain_api_plugin
+
+state-history-dir = "state-history"
+trace-history = true
+chain-state-history = true
+state-history-endpoint = 127.0.0.1:8080
+access-control-allow-origin = *
+http-validate-host = false

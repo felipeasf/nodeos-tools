@@ -1,0 +1,33 @@
+chain-state-db-size-mb = 4096
+chain-state-db-guard-size-mb = 256
+
+http-server-address = 127.0.0.1:18888
+
+p2p-listen-endpoint = 192.168.10.2:19875
+
+#seed
+p2p-peer-address = 192.168.10.2:19876
+
+#apis
+#p2p-peer-address = 127.0.0.1:9876
+#p2p-peer-address = 127.0.0.1:9877
+
+agent-name = "BP"
+
+max-clients = 10
+
+enable-stale-production  = true
+#enable-stale-production = false
+pause-on-startup = false
+
+max-transaction-time = 5000
+
+producer-name = eosio
+
+signature-provider = EOS6MRyAjQq8ud7hiNYcfnVPJqdVpscN5So8BhtHuGYqET5GDW5CV=KEY:5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3
+
+# produce-time-offset-us = 0
+# last-block-time-offset-us = 0
+
+plugin = eosio::chain_api_plugin
+plugin = eosio::net_api_plugin
