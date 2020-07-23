@@ -1,69 +1,130 @@
 const config = require('./config');
+const StateMachine = require('javascript-state-machine');
 const fs = require('fs');
 const fs_extra = require('fs-extra');
 const path = require('path');
-const {spawn} = require('child_process');
+const exec = require('child_process').exec;
 
-console.log("hello");
 
-function clean(){
-    //clean state data folder
-    const state_dir = config.data_path + "state/";
-    fs_extra.removeSync(state_dir);
+let fsm = new StateMachine({
+    init: 'check',
+    transitions: [
+        { name: 'stopping1', from: 'check', to: 'stopped1' },
+        { name: 'wipe1', from: 'stopped1', to: 'cleaned1' },
+        { name: 'replaying1', from: 'cleaned1', to: 'ok1'    },
+        { name: 'stopping2', from: 'ok1', to: 'stopped2' },
+        { name: 'wipe2', from: 'stopped2', to: 'cleaned2' },
+        { name: 'replaying2', from: 'cleaned2', to: 'ok2'    },
+        { name: 'checking', from: 'ok2', to: 'check'    },
+    ],
+    methods: {
+        onStopping_1:     function() { console.log('stopping 1')    },
+        onWipe_1:   function() { console.log('wiping 1')     },
+        onReplaying_1: function() { console.log('replaying 1') },
+        onStopping_2: function() { console.log('stopping 2') },
+        onWipe_2:   function() { console.log('wiping 2')     },
+        onReplaying_2: function() { console.log('replaying 2') },
+        onChecking: function() { console.log('checking') },
+    }
+});
 
-    //clean blocks data folder
-    // const blocks_dir = config.data_path + "blocks/";
-    // fs_extra.removeSync(blocks_dir);
-
-}
-
-let checkSizeId = null;
-
-function check_size(){
-
-}
-
-function replay_snap(){
-
-    console.log("snapshot");
-    flag_snap = false;
-
-    const snap_files = fs.readdirSync(config.snap_dir);
-    const snap = config.snap_dir + snap_files[snap_files.length - 1]
-    const args_snap = ['--snapshot', snap ,'--config-dir', config.config_path, '--data-dir', config.data_path];
-
-    child_proc = spawn("nodeos", args_snap, {detached: true});
-
-    console.log("spawned: " + child_proc.pid);
-
-    child_proc.on('error', (err) => {
-        console.log('Failed to start subprocess.');
-        console.log(err);
-    });
-    child_proc.stdout.on('data', (data) => {
-        console.log(`stdout: ${data}`);
-    });
-
-    //print nodeos output
-    // child_proc.stderr.on('data', (data) => {
-    //     console.log(data.toString());
-    // });
-
-    child_proc.on('close', (code) => {
-        if(count == 3){
-            currentState = states.crashed;
-            count = 0;
-        }else{
-            currentState = states.stopped;
+function check_disk(){
+    console.log("checking disk");
+    exec('df -h "' + config.disk + '"', function(err, stdout) {
+        if (err) {
+            return console.log(err);
         }
-        child_proc = null;
-        console.log(`child process exited with code ${code}`);
-        check();
-     });
 
-    currentState = states.running;
-    //check();
-    // checkTimer = setInterval(() => {
-    //     check();
-    // }, config.check_time);
+        try {
+            console.log(parse(stdout));
+            //console.log(stdout);
+        } catch (e) {
+            console.log(e);
+        }
+    });
 }
+
+function parse(dusage) {
+    var lines = dusage.split('\n');
+    if (!lines[1]) {
+        throw new Error('Unexpected df output: [' + dusage + ']');
+    }
+    var parts = lines[1]
+        .split(' ')
+        .filter(function(x) { return x !== ''; });
+    var total = parts[1];
+    var used = parts[2];
+    var available = parts[3];
+
+    return {
+        total: total*1024,
+        used: used*1024,
+        available: available*1024
+    };
+}
+
+function wipe_data(path){
+
+    exec('rm -rf ' + path + '/state ' + path + '/blocks ' + path + '/protocol_features');
+
+    exec('rm ' + path + '/logs/* ');
+
+    // //clean state data folder
+    // const state_dir = path + "/state/";
+    // fs_extra.removeSync(state_dir);
+    //
+    // //clean blocks folder
+    // const blocks_dir = path + "/blocks/";
+    // fs_extra.removeSync(blocks_dir);
+    //
+    // //clean logs folder
+    // const logs_dir = path + "/logs/";
+    // fs_extra.removeSync(logs_dir);
+    //
+    // //clean protocol_features folder
+    // const protocol_features = path + "/protocol_features/";
+    // fs_extra.removeSync(protocol_features);
+
+}
+
+function stop_nodeos(path){
+    //usar scripts start...stop
+    exec(path + '/stop.sh ', function(err, stdout) {
+        if (err) {
+            return console.log(err);
+        }
+
+        try {
+            console.log(stdout);
+        } catch (e) {
+            console.log(e);
+        }
+    });
+    console.log("stop nodeos");
+}
+
+function pause_producer(endpoint) {
+    exec('curl' +  endpoint + '/v1/producer/pause');
+
+}
+
+function resume_producer(endpoint) {
+    exec('curl' +  endpoint + '/v1/producer/resume');
+}
+
+function replay_snap(n_path, s_path){
+    //GET LAST SNAP
+    let last_snap = "snapshot-03ffb094e5eba385d8324c5f1ed1c51b1d51205071779e404e60dcd8a4ecff89.bin";
+    exec(n_path + '/start.sh --snapshot ' + s_path + "/" + last_snap);
+    console.log("snapshot");
+}
+
+process.on ('SIGINT',() => {
+    console.log('You clicked Ctrl+C!');
+    process.exit(1);
+});
+
+setInterval(() => {
+    console.log('Running Code');
+    check_disk();
+}, 3000)

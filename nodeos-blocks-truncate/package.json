@@ -2,7 +2,7 @@
   "name": "nodeos-blocks-truncate",
   "version": "1.0.0",
   "description": "Truncate the blocks.log to the defined size",
-  "main": "main.js",
+  "main": "old_main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/felipeasf/nodeos-blocks-truncate#readme",
   "dependencies": {
-    "fs-extra": "^8.1.0"
+    "fs-extra": "^8.1.0",
+    "javascript-state-machine": "^3.1.0"
   }
 }

@@ -1,0 +1,15 @@
+{
+    "CLEOSBIN": "/home/felipefaria/eosio/2.0/bin/",
+    "ENDPOINT": "http://192.168.1.193:18888",
+    "ENDPOINT2":"http://192.168.1.193:18888",
+    "PRIV_KEY_TO_SIGN_TX": "5KXyCh714JSskkLerjGRmBaSYPvKVHazsEJfbC9bdcmrAdipEiV",
+    "DO_TRANSFER": 1,
+    "TRANSFER_FROM": "ultra",
+    "TRANSFER_TO": "producer1111",
+    "TRANSFER_AMOUNT": "0.0001 UOS",
+    "TRANSFER_MSG": "stress1 test",
+    "TXS_PER_PUSH": 1000,
+    "THREADS": 10,
+    "REPEAT": 1
+
+}
