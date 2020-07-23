@@ -17,6 +17,7 @@ RUN:
 
 - `api_url` -> Default value: http://127.0.0.1:8888/v1/producer/create_snapshot
 - `snapshot_dir` -> snapshot folder path. Usually, inside nodeos data folder. (always end the snapshot_dir with /)
+ To change the default snapshot folder, add the `snapshots-dir` option on the nodeos config.ini file, with the new path.
 - `total_snapshots` -> total snapshot files to keep
 - `schedule_rule` -> '0 * * * * *' // cron-style equivalent to every hour
 
